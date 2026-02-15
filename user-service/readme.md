@@ -1,0 +1,7 @@
+CREATE TABLE profiles (
+user_id VARCHAR(26) PRIMARY KEY,
+name TEXT NOT NULL,
+phone TEXT NOT NULL,
+rating FLOAT DEFAULT 5.0,
+created_at TIMESTAMP DEFAULT now()
+);

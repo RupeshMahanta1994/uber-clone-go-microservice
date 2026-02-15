@@ -1,0 +1,32 @@
+### Get User Profile
+GET http://localhost:3000/profile/01KHHG87PFTS9VGNRNWTY6DD66
+# Authorization: Bearer YOUR_TOKEN_HERE
+
+### Update User Profile
+POST http://localhost:3000/profile/create
+Content-Type: application/json
+# Authorization: Bearer YOUR_TOKEN_HERE
+
+{
+
+    "name": "John Doe",
+    "email": "john@example.com",
+    "phone": "+1234567890",
+    "rating": 4.5
+}
+###
+PUT  http://localhost:3000/profile/update
+Content-Type: application/json
+# Authorization: Bearer YOUR_TOKEN_HERE
+
+{
+    "userId": "01KHHG87PFTS9VGNRNWTY6DD66",
+    "name": "John Doe Updated",
+    "email": "john.updated@example.com",
+    "phone": "+1234567890",
+    "rating": 4.8
+}
+
+### Delete User Profile
+DELETE http://localhost:8080/api/users/profile
+Authorization: Bearer YOUR_TOKEN_HERE

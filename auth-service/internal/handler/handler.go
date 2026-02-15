@@ -21,6 +21,11 @@ type LoginRequest struct {
 	Password string
 }
 
+// LogoutRequest represents the logout request payload
+type LogoutRequest struct {
+	Token string
+}
+
 // AuthResponse represents the response with token
 type AuthResponse struct {
 	Token string
@@ -71,6 +76,14 @@ func (h *AuthHandler) Login(ctx context.Context, req *LoginRequest) (*AuthRespon
 	}
 
 	return &AuthResponse{Token: token}, nil
+}
+
+func (h *AuthHandler) Logout(ctx context.Context, token string) (*AuthResponse, error) {
+	err := h.authService.Logout(ctx, token)
+	if err != nil {
+		return &AuthResponse{Error: "Invalid Auth Token"}, err
+	}
+	return &AuthResponse{Token: "User Logged out successfully"}, nil
 }
 
 // Validation functions

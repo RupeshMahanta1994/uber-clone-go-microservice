@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/redis/go-redis/v9"
 	"github.com/rupeshmahanta/auth-service/internal/handler"
 	"github.com/rupeshmahanta/auth-service/internal/repository"
 	"github.com/rupeshmahanta/auth-service/internal/router"
@@ -17,7 +18,7 @@ func main() {
 	defer cancel()
 
 	// Database connection
-	conn, err := pgx.Connect(ctx, "postgres://postgres:postgres@localhost:5432/demodb")
+	conn, err := pgx.Connect(ctx, "postgres://rupeshmahanta:6206679616@localhost:5432/demodb")
 	if err != nil {
 		log.Fatal("Error connecting to database:", err)
 	}
@@ -32,12 +33,23 @@ func main() {
 		log.Fatal("Error pinging database:", err)
 	}
 	log.Println("✓ Connected to database")
+	// Redis connection
+	rdb := redis.NewClient(&redis.Options{
+		Addr: "localhost:6379",
+	})
+
+	// Verify Redis connection
+	if err := rdb.Ping(ctx).Err(); err != nil {
+		log.Fatal("Error connecting to Redis:", err)
+	}
+	log.Println("✓ Connected to Redis")
 
 	// Initialize repository
 	repo := repository.NewUserRepository(conn)
+	tokenRepo := repository.NewTokenRepository(rdb)
 
 	// Initialize service
-	authService := service.NewAuthService(repo)
+	authService := service.NewAuthService(repo, tokenRepo)
 
 	// Initialize handler
 	authHandler := handler.NewAuthHandler(authService)

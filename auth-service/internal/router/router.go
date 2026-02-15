@@ -50,6 +50,21 @@ func SetupRouter(authHandler *handler.AuthHandler) *gin.Engine {
 
 			c.JSON(200, resp)
 		})
+		auth.POST("/logout", func(ctx *gin.Context) {
+			var req handler.LogoutRequest
+			if err := ctx.ShouldBindJSON(&req); err != nil {
+				ctx.JSON(400, gin.H{"error": err.Error()})
+				return
+			}
+
+			resp, err := authHandler.Logout(ctx.Request.Context(), req.Token)
+			if err != nil {
+				ctx.JSON(500, gin.H{"error": err.Error()})
+				return
+			}
+
+			ctx.JSON(200, resp)
+		})
 	}
 
 	return router

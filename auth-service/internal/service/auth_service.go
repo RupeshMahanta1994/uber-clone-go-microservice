@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/rupeshmahanta/auth-service/internal/model"
@@ -12,13 +13,15 @@ import (
 type IAuthService interface {
 	Register(ctx context.Context, email, password, role string) (string, error)
 	Login(ctx context.Context, email, password string) (string, error)
+	Logout(ctx context.Context, token string) error
 }
 type AuthService struct {
-	repo repository.IUserRepository
+	repo      repository.IUserRepository
+	tokenRepo repository.ITokenRepsitory
 }
 
-func NewAuthService(repo repository.IUserRepository) *AuthService {
-	return &AuthService{repo: repo}
+func NewAuthService(repo repository.IUserRepository, tokenRepo repository.ITokenRepsitory) *AuthService {
+	return &AuthService{repo: repo, tokenRepo: tokenRepo}
 }
 
 func (s *AuthService) Register(ctx context.Context, email, password, role string) (string, error) {
@@ -48,4 +51,13 @@ func (s *AuthService) Login(ctx context.Context, email, password string) (string
 	}
 	return utils.GenerateToken(user.ID, user.Role)
 
+}
+
+func (s *AuthService) Logout(ctx context.Context, token string) error {
+	claims, err := utils.ValidateToken(token)
+	if err != nil {
+		return err //add aproper message
+	}
+	expiry := time.Until(claims.ExpiresAt.Time)
+	return s.tokenRepo.BlackListToken(ctx, token, expiry)
 }

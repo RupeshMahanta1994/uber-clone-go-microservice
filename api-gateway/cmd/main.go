@@ -12,10 +12,11 @@ func main() {
 	//public Routes
 	app.Post("/auth/login", proxy.ReverseProxy("localhost:8080"))
 	app.Post("/auth/register", proxy.ReverseProxy("localhost:8080"))
+	app.Post("/auth/logout", proxy.ReverseProxy("localhost:8080"))
 
 	//Protected routes group
-	protected := app.Group("/api", middleware.AuthMiddleware())
+	protected := app.Group("/", middleware.AuthMiddleware())
 	//User service routes
-	protected.All("/profile/*", proxy.ReverseProxy("user-service:3000"))
+	protected.All("/profile/*", proxy.ReverseProxy("localhost:3000"))
 	app.Listen(":8081")
 }

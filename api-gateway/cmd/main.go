@@ -18,5 +18,7 @@ func main() {
 	protected := app.Group("/", middleware.AuthMiddleware())
 	//User service routes
 	protected.All("/profile/*", proxy.ReverseProxy("localhost:3000"))
+	protected.All("/drivers/*", proxy.ReverseProxy("localhost:4000"))
+
 	app.Listen(":8081")
 }

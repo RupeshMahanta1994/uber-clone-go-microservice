@@ -20,7 +20,7 @@ func NewDriverHandler(service service.IDriverService) *DriverHandler {
 func (h *DriverHandler) RegisterDriverRoutes(app *fiber.App) {
 	app.Post("/drivers/onboard", h.Onboard)
 	app.Put("/drivers/availability", h.ToggleAvailability)
-	// app.Put("/drivers/status", h.UpdateStatus)
+	app.Put("/drivers/status", h.UpdateStatus)
 	app.Get("/drivers/me", h.GetDriver)
 }
 func (h *DriverHandler) Onboard(c *fiber.Ctx) error {
@@ -56,6 +56,20 @@ func (h *DriverHandler) ToggleAvailability(c *fiber.Ctx) error {
 	}
 	log.Println("Availability status changed successfully")
 	return c.JSON(fiber.Map{"message": "Availability status changed successfully"})
+}
+func (h *DriverHandler) UpdateStatus(c *fiber.Ctx) error {
+	userId := c.Get("X-User-ID")
+	var req StatusRequest
+	if err := c.BodyParser(&req); err != nil {
+		log.Println("Error in parsing Driver Status")
+		return c.Status(500).JSON(fiber.Map{"Error": "Parsing Status payload"})
+	}
+	if _, err := h.service.UpdateStatus(c.Context(), userId, model.Status(req.Status)); err != nil {
+		log.Println("Error in changing availability status of the driver")
+		return c.Status(500).JSON(fiber.Map{"Error": err.Error()})
+	}
+	log.Println("Updated status successfully")
+	return c.Status(200).JSON(fiber.Map{"message": "Driver status updated"})
 }
 
 func (h *DriverHandler) GetDriver(c *fiber.Ctx) error {

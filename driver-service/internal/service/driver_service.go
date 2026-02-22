@@ -55,6 +55,11 @@ func (s *DriverService) UpdateStatus(ctx context.Context, userID string, status 
 		log.Println("Offline driver cannot start trip")
 		return "Offline driver canot start trip", errors.New("Driver is offline")
 	}
+	if status == model.StatusIdle {
+		driver.IsAvailable = true
+	} else {
+		driver.IsAvailable = false
+	}
 	driver.Status = status
 	return s.repo.Update(ctx, driver)
 }

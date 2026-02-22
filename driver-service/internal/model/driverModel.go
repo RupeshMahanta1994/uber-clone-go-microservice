@@ -11,12 +11,12 @@ const (
 )
 
 type Driver struct {
-	UserId        string    `json:"userId"`
-	VechileNubmer string    `json:"vechileNumber"`
-	VechileType   string    `json:"vechileType"`
+	UserID        string    `json:"user_id"`
+	VehicleNumber string    `json:"vehicle_number"`
+	VehicleType   string    `json:"vehicle_type"`
 	Status        Status    `json:"status"`
-	IsAvailable   bool      `json:"isAvailable"`
+	IsAvailable   bool      `json:"is_available"`
 	Rating        float64   `json:"rating"`
-	CreatedAt     time.Time `json:"createAt"`
-	UpdatedAt     time.Time `json:"updatedAt"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
 }

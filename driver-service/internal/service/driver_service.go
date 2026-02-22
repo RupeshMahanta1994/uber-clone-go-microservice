@@ -7,7 +7,6 @@ import (
 
 	"github.com/rupeshmahanta/driver-service/internal/model"
 	"github.com/rupeshmahanta/driver-service/internal/repository"
-	"github.com/rupeshmahanta/driver-service/internal/utils"
 )
 
 type DriverService struct {
@@ -18,7 +17,7 @@ func NewDriverProfile(repo repository.IDriverRepository) *DriverService {
 	return &DriverService{repo: repo}
 }
 func (s *DriverService) Onboard(ctx context.Context, driver *model.Driver) (string, error) {
-	driver.UserId = utils.GenerateId()
+
 	driver.Status = "offline"
 	driver.IsAvailable = false
 	driver.Rating = 5.0
